@@ -25,8 +25,6 @@ BGCOLOR = BLACK
 UP, DOWN, LEFT, RIGHT = "up", "down", "left", "right"
 HEAD = 0  # syntactic sugar: index of the worm's head
 
-# ------------------------------------------------------------------
-
 
 def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT
@@ -43,9 +41,6 @@ def main():
         showGameOverScreen()
 
 
-# ------------------------------------------------------------------
-
-
 def runGame():
     startx = random.randint(5, CELLWIDTH - 6)
     starty = random.randint(5, CELLHEIGHT - 6)
@@ -60,17 +55,14 @@ def runGame():
     paused = False  # <<< NEW: stan pauzy
 
     while True:
-        # -------------- obsługa zdarzeń ----------------------------
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     terminate()
-                # przełączanie pauzy
                 elif event.key == K_p:  # <<< NEW
                     paused = not paused
-                # sterowanie ruchem tylko gdy NIE pauza
                 elif not paused:  # <<< NEW
                     if (event.key in (K_LEFT, K_a)) and direction != RIGHT:
                         direction = LEFT
@@ -81,19 +73,17 @@ def runGame():
                     elif (event.key in (K_DOWN, K_s)) and direction != UP:
                         direction = DOWN
 
-        # -------------- PAUZA: pomiń logikę gry --------------------
         if paused:  # <<< NEW
             DISPLAYSURF.fill(BGCOLOR)
             drawGrid()
             drawWorm(wormCoords)
             drawApple(apple)
             drawScore(len(wormCoords) - 3)
-            drawPause()  # komunikat “Pause”
+            drawPause()
             pygame.display.update()
             FPSCLOCK.tick(FPS)
-            continue  # wróć do początku pętli
+            continue
 
-        # -------------- kolizje z ramką lub samym sobą -------------
         if wormCoords[HEAD]["x"] in (-1, CELLWIDTH) or wormCoords[HEAD]["y"] in (
             -1,
             CELLHEIGHT,
@@ -106,13 +96,11 @@ def runGame():
             ):
                 return  # game over
 
-        # -------------- sprawdzenie zjedzenia jabłka ---------------
         if wormCoords[HEAD]["x"] == apple["x"] and wormCoords[HEAD]["y"] == apple["y"]:
-            apple = getRandomLocation()  # nowe jabłko
+            apple = getRandomLocation()
         else:
-            wormCoords.pop()  # usuń ogon
+            wormCoords.pop()
 
-        # -------------- ruch węża ----------------------------------
         if direction == UP:
             newHead = {"x": wormCoords[HEAD]["x"], "y": wormCoords[HEAD]["y"] - 1}
         elif direction == DOWN:
@@ -123,7 +111,6 @@ def runGame():
             newHead = {"x": wormCoords[HEAD]["x"] + 1, "y": wormCoords[HEAD]["y"]}
         wormCoords.insert(0, newHead)
 
-        # -------------- rysowanie ---------------------------------
         DISPLAYSURF.fill(BGCOLOR)
         drawGrid()
         drawWorm(wormCoords)
@@ -133,17 +120,11 @@ def runGame():
         FPSCLOCK.tick(FPS)
 
 
-# ------------------------------------------------------------------
-
-
 def drawPause():  # <<< NEW
     pauseSurf = BASICFONT.render("PAUSE", True, WHITE)
     pauseRect = pauseSurf.get_rect()
     pauseRect.center = (WINDOWWIDTH // 2, WINDOWHEIGHT // 2)
     DISPLAYSURF.blit(pauseSurf, pauseRect)
-
-
-# ------------------------------------------------------------------
 
 
 def drawPressKeyMsg():
@@ -248,8 +229,6 @@ def drawGrid():
     for y in range(0, WINDOWHEIGHT, CELLSIZE):
         pygame.draw.line(DISPLAYSURF, DARKGRAY, (0, y), (WINDOWWIDTH, y))
 
-
-# ------------------------------------------------------------------
 
 if __name__ == "__main__":
     main()

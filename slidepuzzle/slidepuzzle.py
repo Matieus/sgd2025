@@ -4,16 +4,14 @@
 import pygame, sys, random
 from pygame.locals import *
 
-# ---------------------- stałe konfiguracyjne ----------------------
-BOARDWIDTH = 4  # kolumny
-BOARDHEIGHT = 4  # wiersze
+BOARDWIDTH = 4
+BOARDHEIGHT = 4
 TILESIZE = 80
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 480
 FPS = 30
 BLANK = None
 
-#                 R    G    B
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 BRIGHTBLUE = (0, 50, 255)
@@ -35,8 +33,6 @@ YMARGIN = int((WINDOWHEIGHT - (TILESIZE * BOARDHEIGHT + (BOARDHEIGHT - 1))) / 2)
 
 UP, DOWN, LEFT, RIGHT = "up", "down", "left", "right"
 
-# -----------------------------------------------------------------
-
 
 def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT
@@ -48,7 +44,6 @@ def main():
     pygame.display.set_caption("Slide Puzzle")
     BASICFONT = pygame.font.Font("freesansbold.ttf", BASICFONTSIZE)
 
-    # przyciski w prawym-dolnym rogu
     RESET_SURF, RESET_RECT = makeText(
         "Reset", TEXTCOLOR, TILECOLOR, WINDOWWIDTH - 120, WINDOWHEIGHT - 90
     )
@@ -61,17 +56,16 @@ def main():
 
     mainBoard, solutionSeq = generateNewPuzzle(80)
     SOLVEDBOARD = getStartingBoard()
-    allMoves = []  # historia ruchów
-    moveCount = 0  # <<< LICZNIK RUCHÓW >>>
+    allMoves = []
+    moveCount = 0
 
-    # --------------------------- pętla gry ------------------------
     while True:
         slideTo = None
         msg = "Click tile or press arrow keys to slide."
         if mainBoard == SOLVEDBOARD:
             msg = "Solved!"
 
-        drawBoard(mainBoard, msg, moveCount)  # przekazujemy licznik
+        drawBoard(mainBoard, msg, moveCount)
 
         checkForQuit()
         for event in pygame.event.get():
@@ -79,7 +73,6 @@ def main():
                 spotx, spoty = getSpotClicked(mainBoard, *event.pos)
 
                 if (spotx, spoty) == (None, None):
-                    # kliknięto przyciski opcji
                     if RESET_RECT.collidepoint(event.pos):
                         resetAnimation(mainBoard, allMoves)
                         allMoves.clear()
@@ -117,13 +110,10 @@ def main():
             slideAnimation(mainBoard, slideTo, msg, 8)
             makeMove(mainBoard, slideTo)
             allMoves.append(slideTo)
-            moveCount += 1  # zwiększamy licznik ruchów
+            moveCount += 1
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-
-
-# --------------------- funkcje pomocnicze -------------------------
 
 
 def terminate():
@@ -242,30 +232,23 @@ def makeText(text, color, bgcolor, top, left):
     return (textSurf, textRect)
 
 
-# --------------------------- RYSOWANIE -----------------------------
-
-
 def drawBoard(board, message, moveCount=0):
     """Rysuje całą planszę + komunikat + licznik ruchów."""
     DISPLAYSURF.fill(BGCOLOR)
 
-    # komunikat (górny wiersz)
     if message:
         textSurf, textRect = makeText(message, MESSAGECOLOR, BGCOLOR, 5, 5)
         DISPLAYSURF.blit(textSurf, textRect)
 
-    # licznik ruchów – drugi wiersz
     moveText = f"Moves: {moveCount}"
     moveSurf, moveRect = makeText(moveText, MESSAGECOLOR, BGCOLOR, 5, 25)
     DISPLAYSURF.blit(moveSurf, moveRect)
 
-    # kafelki
     for tilex in range(len(board)):
         for tiley in range(len(board[0])):
             if board[tilex][tiley]:
                 drawTile(tilex, tiley, board[tilex][tiley])
 
-    # ramka planszy
     left, top = getLeftTopOfTile(0, 0)
     width = BOARDWIDTH * TILESIZE
     height = BOARDHEIGHT * TILESIZE
@@ -273,13 +256,9 @@ def drawBoard(board, message, moveCount=0):
         DISPLAYSURF, BORDERCOLOR, (left - 5, top - 5, width + 11, height + 11), 4
     )
 
-    # przyciski
     DISPLAYSURF.blit(RESET_SURF, RESET_RECT)
     DISPLAYSURF.blit(NEW_SURF, NEW_RECT)
     DISPLAYSURF.blit(SOLVE_SURF, SOLVE_RECT)
-
-
-# ---------------------- ANIMACJE I PUZZLE -------------------------
 
 
 def slideAnimation(board, direction, message, animationSpeed):
@@ -293,7 +272,7 @@ def slideAnimation(board, direction, message, animationSpeed):
     elif direction == RIGHT:
         movex, movey = blankx - 1, blanky
 
-    drawBoard(board, message)  # podkład
+    drawBoard(board, message)
     baseSurf = DISPLAYSURF.copy()
     moveLeft, moveTop = getLeftTopOfTile(movex, movey)
     pygame.draw.rect(baseSurf, BGCOLOR, (moveLeft, moveTop, TILESIZE, TILESIZE))
@@ -338,8 +317,6 @@ def resetAnimation(board, allMoves):
         slideAnimation(board, opposite, "", animationSpeed=TILESIZE // 2)
         makeMove(board, opposite)
 
-
-# ------------------------------------------------------------------
 
 if __name__ == "__main__":
     main()

@@ -4,9 +4,7 @@
 import random, sys, webbrowser, copy, pygame
 from pygame.locals import *
 
-# ---------------------------------------------------------------------------
-#                             USTAWIENIA GRY
-# ---------------------------------------------------------------------------
+
 SMALLBOXSIZE = 60
 MEDIUMBOXSIZE = 20
 LARGEBOXSIZE = 11
@@ -32,7 +30,6 @@ maxLife = MEDIUMMAXLIFE
 boardWidth = MEDIUMBOARDSIZE
 boardHeight = MEDIUMBOARDSIZE
 
-# ----------------------- KOLORY & SCHEMATY ---------------------------------
 WHITE = (255, 255, 255)
 DARKGRAY = (70, 70, 70)
 BLACK = (0, 0, 0)
@@ -98,9 +95,6 @@ bgColor = COLORSCHEMES[0][0]
 paletteColors = COLORSCHEMES[0][1:]
 
 
-# ---------------------------------------------------------------------------
-#                               MAIN
-# ---------------------------------------------------------------------------
 def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT  # <<< NEW
     global LOGOIMAGE, SPOTIMAGE, SETTINGSIMAGE, SETTINGSBUTTONIMAGE, RESETBUTTONIMAGE
@@ -124,11 +118,10 @@ def main():
     moveCount = 0  # <<< NEW
     lastPaletteClicked = None
 
-    while True:  # ---------------- GŁÓWNA PĘTLA GRY -----------------
+    while True:
         paletteClicked = None
         resetGame = False
 
-        # ------- RYSOWANIE EKRANU --------
         DISPLAYSURF.fill(bgColor)
         drawLogoAndButtons()
         drawBoard(mainBoard)
@@ -140,7 +133,6 @@ def main():
         for event in pygame.event.get():
             if event.type == MOUSEBUTTONUP:
                 mousex, mousey = event.pos
-                # --- klik na przycisk "Settings"
                 if pygame.Rect(
                     WINDOWWIDTH - SETTINGSBUTTONIMAGE.get_width(),
                     WINDOWHEIGHT - SETTINGSBUTTONIMAGE.get_height(),
@@ -148,7 +140,6 @@ def main():
                     SETTINGSBUTTONIMAGE.get_height(),
                 ).collidepoint(mousex, mousey):
                     resetGame = showSettingsScreen()
-                # --- klik na przycisk "Reset"
                 elif pygame.Rect(
                     WINDOWWIDTH - RESETBUTTONIMAGE.get_width(),
                     WINDOWHEIGHT
@@ -158,11 +149,9 @@ def main():
                     RESETBUTTONIMAGE.get_height(),
                 ).collidepoint(mousex, mousey):
                     resetGame = True
-                # --- klik na paletę
                 else:
                     paletteClicked = getColorOfPaletteAt(mousex, mousey)
 
-        # -------- LOGIKA GRY ------------
         if paletteClicked is not None and paletteClicked != lastPaletteClicked:
             lastPaletteClicked = paletteClicked
             floodAnimation(mainBoard, paletteClicked)
@@ -193,9 +182,6 @@ def main():
         FPSCLOCK.tick(FPS)
 
 
-# ---------------------------------------------------------------------------
-#                  DODATKOWA FUNKCJA – LICZNIK RUCHÓW
-# ---------------------------------------------------------------------------
 def drawMoveCounter(count):  # <<< NEW
     """Wyświetla na ekranie liczbę wykonanych ruchów."""
     textSurf = BASICFONT.render(f"Moves: {count}", True, WHITE, bgColor)
@@ -204,9 +190,6 @@ def drawMoveCounter(count):  # <<< NEW
     DISPLAYSURF.blit(textSurf, textRect)
 
 
-# ---------------------------------------------------------------------------
-#                     POZOSTAŁE FUNKCJE (bez zmian lub skrócone)
-# ---------------------------------------------------------------------------
 def checkForQuit():
     for event in pygame.event.get(QUIT):
         pygame.quit()
@@ -223,11 +206,6 @@ def hasWon(board):
     return all(
         board[x][y] == first for x in range(boardWidth) for y in range(boardHeight)
     )
-
-
-# -------- Settings screen, board utilities, rysowanie itd. ----------
-# (kod poniżej jest identyczny jak w oryginale – nie został zmieniony,
-#  pomijam komentarze, zostawiam tylko treść dla kompletności)
 
 
 def showSettingsScreen():
@@ -478,6 +456,5 @@ def leftTopPixelCoordOfBox(bx, by):
     return bx * boxSize + xmargin, by * boxSize + ymargin
 
 
-# ---------------------------------------------------------------------------
 if __name__ == "__main__":
     main()
