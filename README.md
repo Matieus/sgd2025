@@ -21,6 +21,8 @@ for unix:
 - Add a feature to display the current player's turn on the screen.
 ![image](https://github.com/user-attachments/assets/75b37d3c-e37d-400d-8980-a3e7f16ce8bd)
 ![image](https://github.com/user-attachments/assets/74ea36ec-52a3-48d1-a1b6-e9722f8ba562)
+![image](https://github.com/user-attachments/assets/3e8667ac-bdbb-4579-b424-14c57af5a113)
+
 
 
 #### Ink Spill
