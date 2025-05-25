@@ -20,6 +20,8 @@ for unix:
 #### Fourinrow
 - Add a feature to display the current player's turn on the screen.
 ![image](https://github.com/user-attachments/assets/75b37d3c-e37d-400d-8980-a3e7f16ce8bd)
+![image](https://github.com/user-attachments/assets/74ea36ec-52a3-48d1-a1b6-e9722f8ba562)
+
 
 #### Ink Spill
 - Add a feature to display the number of moves the player has made during the game in the top-left corner of the screen.
